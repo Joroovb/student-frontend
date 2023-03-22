@@ -1,0 +1,34 @@
+-- Create or update checkin
+-- @args 
+-- day: type date The day for the checkin update
+-- pnumber: type numeric Student passnumber 
+-- 
+-- @returs void
+BEGIN 
+     INSERT INTO checkin (date, intime, student_number) values (day, NOW(), pnumber)
+      ON CONFLICT (date, student_number) 
+      DO UPDATE SET outtime = NOW();
+END 
+
+
+-- Create, update or delete checkin
+-- @args 
+-- day: type date The day for the checkin update
+-- pnumber: type numeric Student passnumber 
+-- 
+-- @returs void
+BEGIN
+    IF EXISTS (SELECT * FROM checkin WHERE date = day AND student_number = pnumber) THEN
+        -- If there is an existing entry for the given day and number:
+        IF EXISTS (SELECT 1 FROM checkin WHERE date = day AND student_number = pnumber AND (outtime IS NULL)) THEN
+            -- Update the outtime
+            UPDATE checkin SET outtime = NOW() WHERE date = day AND student_number = pnumber;
+        ELSE
+            -- If both intime and outtime are defined, delete the entry
+            DELETE FROM checkin WHERE date = day AND student_number = pnumber;
+        END IF;
+    ELSE
+        -- If there is no existing entry for the given day and number, create one
+        INSERT INTO checkin (date, intime, student_number) VALUES (day, NOW(), pnumber);
+    END IF;
+END;
