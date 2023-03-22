@@ -16,6 +16,12 @@ jobs:
         node-version: 16
     - name: Install dependencies
       run: npm install
+    - name: 'Create env file'
+      run: |
+        touch .env
+        echo VITE_URL=${{ secrets.VITE_URL }} >> .env
+        echo VITE_KEY=${{ secrets.VITE_KEY }} >> .env
+        cat .env
     - name: Build project
       run: npm run build
     - name: Copy folder content recursively to remote
