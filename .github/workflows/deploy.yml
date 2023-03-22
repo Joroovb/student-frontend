@@ -22,7 +22,7 @@ jobs:
       uses: garygrossgarten/github-action-scp@release
       with:
         local: dist
-        remote: /var/www/vhosts/roc-dev.tech/httpdocs/test
+        remote: /var/www/vhosts/roc-dev.tech/httpdocs
         host: ${{ secrets.HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.PASSWORD }}
