@@ -1,0 +1,28 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+  steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+    - name: Use Node.js 16
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+    - name: Install dependencies
+      run: npm install
+    - name: Build project
+      run: npm run build
+    - name: Copy folder content recursively to remote
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: dist
+          remote: /var/www/vhosts/roc-dev.tech/httpdocs/test
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.PASSWORD }}
